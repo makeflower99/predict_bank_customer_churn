@@ -49,7 +49,7 @@ class Rf:
 
     def eval(self, model, X_test, y_test):
         pred = model.predict_proba(X_test)[:, 1]
-        pred_binary = model.preidct(X_test)
+        pred_binary = model.predict(X_test)
 
         # ROC-AUC 점수로 모델 평가
         fpr, tpr, _ = roc_curve(y_test, pred)
@@ -58,7 +58,7 @@ class Rf:
 
         print(f'ROC-AUC Score : {roc_auc}')
         print(f'F1 score : {f1}')
-        return pred, fpr, tpr, roc_auc
+        return pred, pred_binary, fpr, tpr, roc_auc
 
     def eval_visualize(self, X_test, y_test, pred, fpr, tpr, roc_auc, model):
         threshold = 0.5
