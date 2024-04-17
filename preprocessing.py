@@ -6,6 +6,7 @@ encoder = OneHotEncoder()
 from sklearn.preprocessing import MinMaxScaler
 mm = MinMaxScaler()
 
+
 def preprocess ():
     # 파일 로드
     data = pd.read_csv('./dataset/train.csv')
@@ -21,23 +22,11 @@ def preprocess ():
                             labels= ["Student","Employee","Retired"])
     # 라벨 인코딩
     data['Gender'] = le.fit_transform(data['Gender'])
-    # 원-핫 인코딩
-    def onehot(col):
-        global test
-        encoder.fit(data[[col]])
-        onehot = encoder.transform(data[[col]]).toarray() # 데이터 fit & 변환
-        onehot = pd.DataFrame(onehot)
-        onehot.columns = encoder.get_feature_names_out() # array형태의 출력을 DF로 변환 & 컬럼명 지정
-        
-        test_trans = encoder.transform(test[[col]])
-        test_ohe = pd.DataFrame(test_trans.toarray())
-        test_ohe.columns=encoder.get_feature_names_out()
-        test = pd.concat([test,test_ohe], axis=1)
 
-        return onehot
+    #One hot Encoding
+    geo_ohe = onehot('Geography', data, test)
+    stat_ohe = onehot('Status', data, test)
 
-    geo_ohe = onehot('Geography')
-    stat_ohe = onehot('Status')
     data = pd.concat([data, geo_ohe, stat_ohe], axis=1)
     data.drop(['Geography', 'Status','CustomerId'], axis=1, inplace=True)
     test.drop(['Geography', 'Status','CustomerId'], axis=1, inplace=True)
@@ -63,5 +52,23 @@ def preprocess ():
     train_X = data.drop("Exited", axis=1)
     train_y = data.Exited
     test_X = test
+
+    print(f'Train X shape : {train_X.shape}')
+    print(f'train_y shape : {train_y .shape}')
+    print(f'test_X  shape : {test_X.shape}')
     
     return train_X, train_y, test_X
+
+# 원-핫 인코딩
+def onehot(col, data, test):
+    encoder.fit(data[[col]])
+    onehot = encoder.transform(data[[col]]).toarray()  # 데이터 fit & 변환
+    onehot = pd.DataFrame(onehot)
+    onehot.columns = encoder.get_feature_names_out()  # array형태의 출력을 DF로 변환 & 컬럼명 지정
+
+    test_trans = encoder.transform(test[[col]])
+    test_ohe = pd.DataFrame(test_trans.toarray())
+    test_ohe.columns = encoder.get_feature_names_out()
+    test = pd.concat([test, test_ohe], axis=1)
+
+    return onehot
