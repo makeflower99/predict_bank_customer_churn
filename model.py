@@ -30,7 +30,8 @@ class Rf:
         self.n_jobs = -1 # 컴퓨터의 모든 코어 사용
 
 
-    def best_fit(self, param_grid, cv, scoring, X_train, y_train,):
+    def best_fit(self, param_grid, cv, scoring, X_train, y_train):
+
         rf = RandomForestClassifier(random_state=self.random_state, n_jobs=self.n_jobs)
         grid_search = GridSearchCV(rf, param_grid, cv=cv, scoring=scoring,refit='roc_auc_score')
         grid_search.fit(X_train, y_train)
