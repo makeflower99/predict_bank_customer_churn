@@ -1,3 +1,6 @@
+from sklearn.preprocessing import MinMaxScaler
+
+
 def mm_sclaer(train, test):
     features = ['CreditScore', 'Balance', 'EstimatedSalary']
     mm = mm = MinMaxScaler()
