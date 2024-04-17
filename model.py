@@ -9,8 +9,8 @@ import pandas as pd
 '''
 데이터셋 분할하는 함수
 '''
-def split(train_data, test_data):
-    X_train, y_train, X_test, y_test = train_test_split(train_data, test_data, test_size=0.3, shuffle=True, random_state=42)
+def split(train_data, label):
+    X_train, y_train, X_test, y_test = train_test_split(train_data, label, test_size=0.3, shuffle=True, random_state=42)
 
     print(f'X_train shape : {X_train.shape}, y_train shape : {y_train.shape}')
     print(f'X_test shape : {X_test.shape}, y_test shape : {y_test.shape}')
