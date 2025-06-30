@@ -1,3 +1,5 @@
+import datetime
+
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, roc_auc_score, roc_curve, confusion_matrix
@@ -5,6 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 from enum import IntEnum
+from pathlib import Path
+import os
 
 '''
 데이터셋 분할하는 함수
@@ -69,6 +73,8 @@ def eval_visualize(X_test, y_test, pred, fpr, tpr, roc_auc, model):
     threshold = 0.5
     pred_binary = (pred > threshold).astype(int)
 
+    path = Path('./result_img')
+
     conf_matrix = confusion_matrix(y_test, pred_binary)
 
     plt.figure(figsize=(8, 6))
@@ -76,7 +82,12 @@ def eval_visualize(X_test, y_test, pred, fpr, tpr, roc_auc, model):
     plt.title("Confusion Matrix")
     plt.xlabel("Predicted Label")
     plt.ylabel("True Label")
+    confusion_matrix_filename = os.path.join(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+                                             .join('_Confusion Matrix'))
+
+    plt.imsave(confusion_matrix_filename, 'jpg')
     plt.show()
+
 
     plt.figure(figsize=(10, 6))
     plt.plot(fpr, tpr, label=f'Random Forest (AUC = {roc_auc:.4f})')
@@ -86,7 +97,10 @@ def eval_visualize(X_test, y_test, pred, fpr, tpr, roc_auc, model):
     plt.ylabel('True Positive Rate')
     plt.title('Tuned ROC Curve')
     plt.legend()
+    roc_filename = os.path.join(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S').join('_Tuned ROC Curve'))
+    plt.imsave(roc_filename, 'jpg')
     plt.show()
+
 
     # 시리즈로 만들어 인덱스를 붙인다
     fi = pd.Series(model.feature_importances_, index=X_test.columns)
@@ -98,6 +112,8 @@ def eval_visualize(X_test, y_test, pred, fpr, tpr, roc_auc, model):
     plt.figure(figsize=(8, 6))
     plt.title('Feature Importances')
     sns.barplot(x=desc_cols, y=desc_cols.index)
+    feature_importance_filename = os.path.join(path, datetime.datetime.now().strftime('%Y%m%d%H%M%S').join('_Feature Importances'))
+    plt.imsave(feature_importance_filename, 'jpg')
     plt.show()
 
 
